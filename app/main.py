@@ -119,7 +119,7 @@ def delete_cart_by_id(cart_id: str = Path(None, min_length=3, max_length=3)):
     )
 
 
-# findcart
+# findallcart
 
 
 @app.get("/cart/")
@@ -132,6 +132,23 @@ def get_cart(
         result = mongo_db_cart.find(sort_by, order)
     except:
         raise HTTPException(status_code=500, detail="Something went wrong !!")
+
+    return JSONResponse(
+        content={"status": "OK", "data": result},
+        status_code=200,
+    )
+
+
+# find ID
+@app.get("/cart/{cart_id}")
+def get_book_by_id(cart_id: str = Path(None, min_length=3, max_length=3)):
+    try:
+        result = mongo_db_cart.find_one(cart_id)
+    except:
+        raise HTTPException(status_code=500, detail="Something went wrong !!")
+
+    if result is None:
+        raise HTTPException(status_code=404, detail="book Id not found !!")
 
     return JSONResponse(
         content={"status": "OK", "data": result},
